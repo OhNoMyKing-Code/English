@@ -1,4 +1,4 @@
-name: build exe
+name: Build Windows EXE
 
 on:
   push:
@@ -38,7 +38,7 @@ jobs:
         run: dir dist
 
       - name: Upload dist artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: windows-build
           path: dist/**

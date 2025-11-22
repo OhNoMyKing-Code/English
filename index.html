@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Demo: Ứng dụng phát âm tiếng Anh</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Ứng dụng phát âm tiếng Anh — Demo</h1>
+
+    <label for="preset">Chọn câu mẫu:</label>
+    <select id="preset">
+      <option>She sells seashells by the seashore.</option>
+      <option>The quick brown fox jumps over the lazy dog.</option>
+      <option>How are you today?</option>
+      <option>I would like a cup of coffee, please.</option>
+    </select>
+
+    <label for="text">Hoặc nhập câu:</label>
+    <textarea id="text" rows="3">She sells seashells by the seashore.</textarea>
+
+    <div class="controls">
+      <label for="voiceSelect">Giọng:</label>
+      <select id="voiceSelect"></select>
+
+      <button id="speakBtn">Phát âm</button>
+      <button id="startRecBtn">Bắt đầu thu âm</button>
+      <button id="stopRecBtn" disabled>Dừng thu âm</button>
+    </div>
+
+    <div class="results">
+      <h3>Kết quả</h3>
+      <p><strong>Transcript nhận dạng:</strong> <span id="transcript">—</span></p>
+      <p><strong>Điểm tương đồng:</strong> <span id="score">—</span></p>
+      <p id="notes"></p>
+    </div>
+
+    <footer>
+      <small>Chạy trên trình duyệt hỗ trợ Web Speech API (Chrome tốt nhất).</small>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

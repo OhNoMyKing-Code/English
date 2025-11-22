@@ -1,4 +1,4 @@
-# Demo ứng dụng phát âm tiếng Anh (Web)
+# Ứng dụng phát âm tiếng Anh (Web) bởi học sinh Đỗ Trọng Khanh và Mai Minh Khánh
 
 Mục tiêu: demo nhanh TTS + speech recognition để luyện phát âm.
 

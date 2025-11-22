@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!text) return;
     const utter = new SpeechSynthesisUtterance(text);
     const voices = synth.getVoices() || [];
-
     const idx = parseInt(voiceSelect.value, 10);
     if (!Number.isNaN(idx) && voices[idx]) utter.voice = voices[idx];
     // Optional controls (could be hooked to UI sliders)
@@ -88,9 +87,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const score = Math.max(0, Math.round((1 - dist / (maxLen || 1)) * 100));
     return score;
   }
+
   // SpeechRecognition (browser-specific)
   const startRecBtn = document.getElementById('startRecBtn');
   const stopRecBtn = document.getElementById('stopRecBtn');
+
   let recognition = null;
   if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -98,3 +99,55 @@ document.addEventListener('DOMContentLoaded', () => {
     recognition.lang = 'en-US'; // có thể expose UI để đổi en-GB/en-US...
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      notesEl.textContent = 'Đang ghi âm... nói rõ ràng và gần giống mẫu.';
+      startRecBtn.disabled = true;
+      stopRecBtn.disabled = false;
+    };
+
+    recognition.onerror = (e) => {
+      // Một số trình duyệt trả về event with .error, một số khác .message
+      notesEl.textContent = 'Lỗi nhận dạng: ' + (e.error || e.message || JSON.stringify(e));
+      startRecBtn.disabled = false;
+      stopRecBtn.disabled = true;
+    };
+
+    recognition.onresult = (e) => {
+      const text = (e.results && e.results[0] && e.results[0][0] && e.results[0][0].transcript) || '';
+      transcriptEl.textContent = text;
+      const score = similarityScore(textEl.value, text);
+      scoreEl.textContent = score + '%';
+      notesEl.textContent = score >= 80 ? 'Rất tốt!' : (score >= 50 ? 'Cần cải thiện' : 'Cần luyện tập nhiều hơn');
+    };
+
+    recognition.onend = () => {
+      startRecBtn.disabled = false;
+      stopRecBtn.disabled = true;
+      notesEl.textContent = notesEl.textContent || 'Kết thúc ghi âm.';
+    };
+  } else {
+    notesEl.textContent = 'Trình duyệt không hỗ trợ SpeechRecognition. Dùng Chrome trên desktop để thử.';
+    startRecBtn.disabled = true;
+    stopRecBtn.disabled = true;
+  }
+
+  startRecBtn.addEventListener('click', () => {
+    if (!recognition) return;
+    transcriptEl.textContent = '...';
+    scoreEl.textContent = '...';
+    try {
+      recognition.start();
+    } catch (err) {
+      // Một số browser ném lỗi nếu gọi start quá nhanh sau stop
+      notesEl.textContent = 'Không thể bắt đầu nhận dạng: ' + (err.message || err);
+    }
+  });
+
+  stopRecBtn.addEventListener('click', () => {
+    if (!recognition) return;
+    try {
+      recognition.stop();
+    } catch (_) { /* ignore */ }
+  });
+});

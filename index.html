@@ -3,45 +3,127 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Demo: Ứng dụng phát âm tiếng Anh</title>
+  <title>Ứng dụng phát âm tiếng Anh — Đỗ Trọng Khanh &amp; Mai Minh Khánh</title>
+
+  <!-- Fonts & styles -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+
+  <meta name="description" content="Ứng dụng hỗ trợ phát âm tiếng Anh, ghi âm và so sánh phát âm dựa vào Web Speech API.">
 </head>
 <body>
-  <div class="container">
-    <h1>Ứng dụng phát âm tiếng Anh bởi Đỗ Trọng Khanh và Mai Minh Khánh</h1>
-
-    <label for="preset">Chọn câu mẫu:</label>
-    <select id="preset">
-      <option>She sells seashells by the seashore.</option>
-      <option>The quick brown fox jumps over the lazy dog.</option>
-      <option>How are you today?</option>
-      <option>I would like a cup of coffee, please.</option>
-    </select>
-
-    <label for="text">Hoặc nhập câu:</label>
-    <textarea id="text" rows="3">She sells seashells by the seashore.</textarea>
-
-    <div class="controls">
-      <label for="voiceSelect">Giọng:</label>
-      <select id="voiceSelect"></select>
-
-      <button id="speakBtn">Phát âm</button>
-      <button id="startRecBtn">Bắt đầu thu âm</button>
-      <button id="stopRecBtn" disabled>Dừng thu âm</button>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#">Phát Âm English<span class="accent">.</span></a>
+      <nav class="nav-links" aria-label="Chính">
+        <a href="#">Trang chủ</a>
+        <a href="#features">Tính năng</a>
+        <a href="#contact">Liên hệ</a>
+      </nav>
     </div>
+  </header>
 
-    <div class="results">
-      <h3>Kết quả</h3>
-      <p><strong>Transcript nhận dạng:</strong> <span id="transcript">—</span></p>
-      <p><strong>Điểm tương đồng:</strong> <span id="score">—</span></p>
-      <p id="notes"></p>
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-text">
+          <h1>Ứng dụng phát âm tiếng Anh</h1>
+          <p class="lead">Ghi âm, phát âm mẫu bằng giọng tổng hợp và so sánh transcript để đánh giá phát âm của bạn. Dựa trên Web Speech API — chạy ngay trong trình duyệt.</p>
+
+          <div class="form-group">
+            <label for="preset">Chọn câu mẫu</label>
+            <select id="preset" aria-label="Chọn câu mẫu" class="full">
+              <option value="She sells seashells by the seashore.">She sells seashells by the seashore.</option>
+              <option value="The quick brown fox jumps over the lazy dog.">The quick brown fox jumps over the lazy dog.</option>
+              <option value="How are you today?">How are you today?</option>
+              <option value="I would like a cup of coffee, please.">I would like a cup of coffee, please.</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="text">Hoặc nhập câu</label>
+            <textarea id="text" rows="3" class="full">She sells seashells by the seashore.</textarea>
+          </div>
+
+          <div class="controls">
+            <div class="control-group">
+              <label for="voiceSelect">Giọng</label>
+              <select id="voiceSelect" aria-label="Chọn giọng" class="voice-select"></select>
+            </div>
+
+            <div class="control-buttons">
+              <button id="speakBtn" class="btn" title="Phát âm văn bản">Phát âm</button>
+              <button id="startRecBtn" class="btn btn-ghost" title="Bắt đầu thu âm">Bắt đầu thu âm</button>
+              <button id="stopRecBtn" class="btn btn-outline" title="Dừng thu âm" disabled>Dừng thu âm</button>
+            </div>
+          </div>
+
+          <p class="hint muted">Ghi chú: Cho phép micro khi trình duyệt yêu cầu. Tính năng nhận dạng giọng nói có thể khác giữa các trình duyệt.</p>
+        </div>
+
+        <div class="hero-demo">
+          <div class="card" style="padding:18px;">
+            <h3>Kết quả</h3>
+            <p><strong>Transcript nhận dạng:</strong> <span id="transcript" aria-live="polite">—</span></p>
+            <p><strong>Điểm tương đồng:</strong> <span id="score">—</span></p>
+            <p id="notes" class="muted"></p>
+
+            <div class="small-cta" style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+              <button id="playRefBtn" class="btn btn-ghost" title="Phát lại mẫu">Phát lại mẫu</button>
+              <button id="downloadBtn" class="btn btn-outline" title="Tải file thu âm" disabled>Tải thu âm</button>
+            </div>
+
+            <div id="status" class="muted" style="margin-top:10px;" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="features">
+      <div class="container">
+        <h2 class="section-title">Tính năng nổi bật</h2>
+        <div class="grid features-grid">
+          <article class="card">
+            <div class="card-icon">🎤</div>
+            <h3>Ghi âm trực tiếp</h3>
+            <p>Ghi âm phát âm của bạn ngay trong trình duyệt, không cần cài thêm.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">🔊</div>
+            <h3>Phát âm mẫu</h3>
+            <p>Phát mẫu bằng giọng tổng hợp (có thể lựa chọn giọng).</p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">🧠</div>
+            <h3>Nhận dạng và so sánh</h3>
+            <p>Nhận dạng lời nói và so sánh với câu mẫu để đưa ra điểm tương đồng và gợi ý cải thiện.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-band">
+      <div class="container cta-inner">
+        <div>
+          <h3>Bắt đầu luyện phát âm</h3>
+          <p>Chọn hoặc nhập câu, chọn giọng và nhấn "Phát âm" — sau đó ghi âm để so sánh.</p>
+        </div>
+        <a class="btn" href="#preset">Bắt đầu</a>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact" class="footer">
+    <div class="container footer-inner">
+      <div>© <span id="year"></span> Đỗ Trọng Khanh &amp; Mai Minh Khánh</div>
+      <div class="socials">Dựa vào Web Speech API • <a href="lichessbotvietnam@gmail.com">Liên hệ</a></div>
     </div>
+  </footer>
 
-    <footer>
-      <small>dựa vào Web Speech.</small>
-    </footer>
-  </div>
-
+  <!-- App script -->
   <script src="app.js"></script>
 </body>
 </html>
